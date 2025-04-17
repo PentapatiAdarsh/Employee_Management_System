@@ -22,6 +22,15 @@ urlpatterns = [
 
 
     path('', views.homepage, name="WelcomeHome"),
+    path('adminlogin/', views.adminlogin, name="adminlogin"),
+    path('adminlogout/', views.adminlogout, name="adminlogout"),
+    path('adminloginaction/', views.adminloginaction, name="adminloginaction"),
+    path('adminhome/', views.adminhome, name="adminhome"),
+    path('feature_selection/', views.feature_selection, name="feature_selection"),
+    path('classification/', views.classification, name="classification"),
+
+
+    
     
 
    
