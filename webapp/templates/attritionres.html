@@ -1,0 +1,29 @@
+
+{% extends 'hr_base.html' %}
+{% load static %}
+
+{% block content %}
+<center>
+
+	<font size="" color="#ff0000"><strong>{{msg}}</strong></font>
+	<br><br>
+<table width="100%">
+<tr><td>
+<h2>Prediction Results</h2>
+<br>
+<table width="100%" border id="tab">
+<tr><th>*<th>Emp ID<th>Attrition Result
+
+ {% for key, value in data.items %}
+                <tr><td>{{forloop.counter}}
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+            {% endfor %}
+
+</table>
+<td valign="top">
+ <img src="{% static 'assets/images/prediction.jpg' %}" width="600" />
+</table>
+
+{% endblock %}

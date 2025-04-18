@@ -22,6 +22,29 @@ urlpatterns = [
 
 
     path('', views.homepage, name="WelcomeHome"),
+    path('adminlogin/', views.adminlogin, name="adminlogin"),
+    path('adminlogout/', views.adminlogout, name="adminlogout"),
+    path('adminloginaction/', views.adminloginaction, name="adminloginaction"),
+    path('adminhome/', views.adminhome, name="adminhome"),
+    path('feature_selection/', views.feature_selection, name="feature_selection"),
+    path('classification/', views.classification, name="classification"),
+
+    path('nbtrain/', views.nbtrain, name="nbtrain"),
+    path('dttrain/', views.dttrain, name="dttrain"),
+    path('rftrain/', views.rftrain, name="rftrain"),
+    path('svmtrain/', views.svmtrain, name="svmtrain"),
+    path('lrtrain/', views.lrtrain, name="lrtrain"),
+    path('evaluation/', views.evaluation, name="evaluation"),
+
+    path('hrlogin/', views.hrlogin, name="hrlogin"),
+    path('hrlogout/', views.hrlogout, name="hrlogout"),
+    path('hrloginaction/', views.hrloginaction, name="hrloginaction"),
+    path('hrhome/', views.hrhome, name="hrhome"),
+    
+
+
+    path('attrition/', views.attrition, name="attrition"),
+
     
 
    
