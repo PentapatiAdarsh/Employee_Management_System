@@ -30,6 +30,13 @@ urlpatterns = [
     path('classification/', views.classification, name="classification"),
 
 
+    path('nbtrain/', views.nbtrain, name="nbtrain"),
+    path('dttrain/', views.dttrain, name="dttrain"),
+    path('rftrain/', views.rftrain, name="rftrain"),
+    path('svmtrain/', views.svmtrain, name="svmtrain"),
+    path('lrtrain/', views.lrtrain, name="lrtrain"),
+    path('evaluation/', views.evaluation, name="evaluation"),
+
     
     
 
