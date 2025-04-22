@@ -29,7 +29,6 @@ urlpatterns = [
     path('feature_selection/', views.feature_selection, name="feature_selection"),
     path('classification/', views.classification, name="classification"),
 
-
     path('nbtrain/', views.nbtrain, name="nbtrain"),
     path('dttrain/', views.dttrain, name="dttrain"),
     path('rftrain/', views.rftrain, name="rftrain"),
@@ -37,7 +36,15 @@ urlpatterns = [
     path('lrtrain/', views.lrtrain, name="lrtrain"),
     path('evaluation/', views.evaluation, name="evaluation"),
 
+    path('hrlogin/', views.hrlogin, name="hrlogin"),
+    path('hrlogout/', views.hrlogout, name="hrlogout"),
+    path('hrloginaction/', views.hrloginaction, name="hrloginaction"),
+    path('hrhome/', views.hrhome, name="hrhome"),
     
+
+
+    path('attrition/', views.attrition, name="attrition"),
+
     
 
    
