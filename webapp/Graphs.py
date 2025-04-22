@@ -22,7 +22,7 @@ def viewg(g1, picname, name):
     plt.xlabel('')
     plt.ylabel('')
     plt.title(str(name)+' Graph')
-    plt.savefig('D:\\Django\\EMS\\webapp\\static\\assets\\images\\'+str(picname))
+    plt.savefig('C:\\Users\\adars\\OneDrive\\Documents\\Capstone\\Project\\EMS\\webapp\\static\\assets\\images\\'+str(picname))
     plt.clf()
 
 

@@ -149,3 +149,61 @@ def evaluation(request):
     except:pass
 
     return render(request, 'viewacc.html', {'data': d})
+
+
+
+
+
+def hrlogin(request):
+    return render(request, 'hr.html')
+
+
+def hrloginaction(request):
+    userid=request.POST['aid']
+    pwd=request.POST['pwd']
+    print(userid, pwd,'<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
+    if userid=='HR' and pwd=="HR":
+        request.session['hrid']='admin'
+        return render(request, 'hrhome.html')
+    else:
+        err='Your Login Data is wrong !!' 
+        return render(request, 'hr.html',{'msg':err})
+
+
+
+def hrhome(request):
+    return render(request, 'hrhome.html')
+
+
+def hrlogout(request):
+    return render(request, 'hr.html')
+
+
+
+def attrition(request):
+    if request.method == 'POST':
+
+        file=request.POST['file']
+
+        from .FeatureSelection2 import featureselection
+        features=featureselection.calc()
+    
+        from .Prediction import Prediction
+        empid,res=Prediction.get(features, file)
+
+        d=dict({})
+
+        for i in range(len(empid)):
+            d[empid[i]]=res[i]
+        
+        from .Freq import CountFrequency
+        resdict=CountFrequency(res)
+
+        from .Graphs import viewg
+        viewg(resdict,'prediction.jpg','Prediction Result')
+       
+        return render(request, 'attritionres.html', {'data':d})
+
+    else:
+        return render(request, 'attrition.html')
+
