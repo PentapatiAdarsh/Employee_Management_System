@@ -6,7 +6,10 @@ from django.http import HttpResponse, request
 
 from .models import *
 import random as r
+from .DateTime import getdate
 
+
+import mimetypes
 
 
 # Create your views here.
@@ -207,3 +210,310 @@ def attrition(request):
     else:
         return render(request, 'attrition.html')
 
+
+def signuppage(request):
+    if request.method == 'POST':
+        e_mail = request.POST['mail']
+
+        d = employees.objects.filter(e_mail__exact=e_mail).count()
+        if d > 0:
+            return render(request, 'signup.html', {'msg': "e_mail Already Registered"})
+        else:
+
+            pass_word = request.POST['pass_word']
+            phone = request.POST['phone']
+            role = request.POST['role']
+            n_a_m_e = request.POST['n_a_m_e']
+        
+            d = employees(n_a_m_e=n_a_m_e, e_mail=e_mail, pass_word=pass_word, phone=phone, role=role)
+            d.save()
+
+            return render(request, 'signup.html', {'msg': "Register Success, You can Login.."})
+
+    else:
+        return render(request, 'signup.html')
+
+    
+	
+def userloginaction(request):
+	if request.method=='POST':
+		uid=request.POST['uid']
+		pass_word=request.POST['pwd']
+		d=employees.objects.filter(e_mail__exact=uid).filter(pass_word__exact=pass_word).count()
+		
+		if d>0:
+			d=employees.objects.filter(e_mail__exact=uid)
+			request.session['e_mail']=uid
+			request.session['n_a_m_e']=d[0].n_a_m_e
+			request.session['sc_calls']=""
+			
+
+			return render(request, 'user_home.html',{'data': d[0]})
+
+		else:
+			return render(request, 'user.html',{'msg':"Login Fail"})
+
+	else:
+		return render(request, 'user.html')
+
+
+
+
+def userlogoutdef(request):
+    if "e_mail" in request.session:
+        del request.session['e_mail']
+        return render(request, 'user.html')
+    else:
+        return render(request, 'user.html')
+
+
+
+
+def userhomedef(request):
+	if "e_mail" in request.session:
+		e_mail=request.session["e_mail"]
+		d=employees.objects.filter(e_mail__exact=e_mail)
+	
+		return render(request, 'user_home.html',{'data': d[0]})
+
+	else:
+		return redirect('userlogoutdef')
+
+		
+def viewprofilepage(request):
+	if "e_mail" in request.session:
+		uid=request.session["e_mail"]
+		d=employees.objects.filter(e_mail__exact=uid)
+		
+
+		return render(request, 'viewpprofile.html',{'data': d[0]})
+
+	else:
+		return render(request, 'user.html')
+
+
+def updateprofile(request):
+    if request.method == 'POST':
+        name = request.POST["name"] 
+        phone = request.POST['phone']
+        email = request.session["e_mail"]
+        employees.objects.filter(e_mail=email).update(n_a_m_e=name, phone=phone)
+        
+        return render(request, 'user_home.html',{'msg':'Profile Updated !!'} )
+       
+    else:
+        email = request.session["e_mail"]
+        d = employees.objects.filter(e_mail=email)
+   
+        return render(request, 'updateprofile.html', {'data': d[0]})
+
+
+
+
+def updatepwd(request):
+    if request.method == 'POST':
+        newpwd = request.POST["newpwd"] 
+        old = request.POST['old']
+        email = request.session["e_mail"]
+        d=employees.objects.filter(e_mail=email).filter(pass_word=old).count()
+        if d>0:
+            employees.objects.filter(e_mail=email).update(pass_word=newpwd)
+        return render(request, 'user_home.html',{'msg':'Password Updated !!'} )
+       
+    else:
+        
+        return render(request, 'updatepwd.html')
+
+
+
+
+
+
+
+
+def fileupload(request):
+    if request.method == 'POST':
+        file = request.POST['file']
+        filen=file
+        file2 = 'Data/' + file
+        title = request.POST['Title']
+        access = request.POST['access']
+    
+        email = request.session["e_mail"]
+        name = request.session["n_a_m_e"]
+        f = open(file2, "r")
+        dt = f.read()
+
+
+        
+        d = files(user=email, username=name, filename=filen, filetitle=title, access=access, filedata=dt, stz='Online')
+        d.save()
+    
+        return render(request, 'user_home.html', {'msg': 'File Uploaded ! '})
+    
+
+        #-------------------------------------------
+
+
+
+
+        
+    
+    else:
+        return render(request, 'uploadfile.html')
+        
+
+def viewfiles(request):
+    if "e_mail" in request.session:
+        email = request.session["e_mail"]
+        d = files.objects.filter(stz='Online', user=email)
+    
+        return render(request, 'viewfiles.html', {'data': d})
+    
+    else:
+        return render(request, 'user.html')
+
+def viewfile(request, op):
+    if "e_mail" in request.session:
+        d = files.objects.filter(id=op)
+
+        
+        return render(request, 'viewfile.html', {'d': d[0]})
+
+    else:
+        return render(request, 'user.html')
+
+def filedownload(request):
+    if "e_mail" in request.session:
+        fid = request.POST['fid']
+        fname = request.POST['fname']
+        data = request.POST['data']
+
+        print(fname,'<<<<<<<<<<<<<<<<<<<<<<<<<<<')
+
+        
+        d = files.objects.filter(id=fid)
+
+
+
+        filepath = 'D:\\Django\\EMS\\Data\\'+fname
+        print(filepath)
+        path = open(filepath)
+        mime_type, _ = mimetypes.guess_type(filepath)
+        response = HttpResponse(path, content_type=mime_type)
+        response['Content-Disposition'] = "attachment; filename=%s" % fname
+        return response
+
+        return render(request, 'viewfile.html', {'d': d[0]})
+
+    else:
+       return render(request, 'user.html')
+	   
+
+def fileupdate(request, op):
+    if request.method == 'POST':
+        pass
+
+    else:
+        d = files.objects.filter(id=op)
+        return render(request, 'fileupdate.html', {'d': d[0]})
+
+
+def fileupdateaction(request):
+    if request.method == 'POST':
+        fid = request.POST['fid']
+        fname = request.POST['fname']
+        data = request.POST['data']
+
+        files.objects.filter(id=fid).update(filedata=data)
+
+        
+        return redirect('viewfiles')
+    else:
+        pass
+
+
+def chgaccess(request, op):
+    if request.method == 'POST':
+        pass
+    else:
+        d = files.objects.filter(id=op)
+        return render(request, 'fileaccess.html', {'d': d[0]})
+
+def chgaccessaction(request):
+    if request.method == 'POST':
+        fid = request.POST['fid']
+        access = request.POST['access']
+
+        files.objects.filter(id=fid).update(access=access)
+
+        
+
+        return redirect('viewfiles')
+    else:
+        pass
+
+
+def delete(request, op):
+    if request.method == 'POST':
+        pass
+    else:
+        scupdate(request, "FileDelete")
+        d = files.objects.filter(id=op).update(stz="ofline")
+        return redirect('viewfiles')
+
+def search(request):
+    if request.method == 'POST':
+        keys = request.POST['keys']
+        print(keys)
+       
+        d=files.objects.filter(filetitle__icontains=keys).filter(stz='Online').filter(access='Public')
+        return render(request, 'searchresults.html', {'data': d})
+        
+    else:
+        return render(request, 'search.html')
+
+def newmail(request):
+    if request.method == 'POST':
+        email = request.session["e_mail"]
+        name = request.session["n_a_m_e"] 
+        sub = request.POST['sub']
+        body = request.POST['body']
+        t_o = request.POST['t_o']
+        dt=getdate()
+        
+        d = mails(sender=email, sendername=name, recipient=t_o, title=sub, data=body, datetime=dt)
+        d.save()
+    
+        return render(request, 'user_home.html',{'msg':'Mail Sent !!'} )
+        
+    else:
+        
+
+        return render(request, 'compose.html')
+
+
+def inbox(request):
+    if "e_mail" in request.session:
+        email = request.session["e_mail"]
+        d = mails.objects.filter(recipient=email).order_by("-id")
+    
+        
+    
+        return render(request, 'viewmails.html', {'data': d})
+    
+    else:
+        return render(request, 'user.html')
+
+
+def viewmail(request, op):
+    if request.method == 'POST':
+        pass
+
+    else:
+        d = mails.objects.filter(id=op)
+        return render(request, 'viewmail.html', {'d': d[0]})
+
+def viewemp(request):
+    d=employees.objects.filter()
+    return render(request, 'viewemp.html', {'data': d})

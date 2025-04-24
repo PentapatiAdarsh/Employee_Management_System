@@ -1,0 +1,22 @@
+
+		
+{% extends 'hr_base.html' %}
+{% load static %}
+{% block content %}
+	<strong>{{msg}}</strong>
+	<h2>View Employees<br><br></h2>
+<table id="tab" width="90%" >
+<tr><th width="20%">#<th>Name<th>Email<th>Phone<th>Role
+
+				{% for d in data %}
+	
+					<tr><td>	{{ forloop.counter }}
+			<td>	{{d.n_a_m_e}}
+			<td>	{{d.e_mail}}
+			<td>	{{d.phone}}
+			<td>	{{d.role}}
+			
+			
+			{% endfor %}
+			</table><br><br><br><br><br><br><br><br>
+{% endblock %}
